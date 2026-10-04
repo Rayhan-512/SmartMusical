@@ -264,7 +264,7 @@ public class SmartMusical {
                     break;
 
                 case 5:
-                    System.out.println("Terima kasih telah menggunakan Smart Musical!.");
+                    System.out.println("Terima kasih telah menggunakan Smart Musical!");
                     berjalan = false;
                     break;
 
