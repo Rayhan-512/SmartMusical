@@ -65,4 +65,8 @@ public class AlatMusik {
     public void caraPerawatan() {
         System.out.println("Perawatan: Simpan di tempat yang bersih, kering, dan aman.");
     }
+    
+    public void mainkan() {
+        System.out.println("Alat musik sedang dimainkan.");
+    }
 }

@@ -30,4 +30,9 @@ public class Drum extends AlatMusik {
     public void caraPerawatan() {
         System.out.println("Perawatan Drum: Bersihkan permukaan drum dan simpan di tempat kering.");
     }
+    
+    @Override
+    public void mainkan() {
+        System.out.println("Drum dimainkan dengan cara dipukul.");
+    }
 }

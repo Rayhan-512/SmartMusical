@@ -30,4 +30,9 @@ public class Piano extends AlatMusik {
     public void caraPerawatan() {
         System.out.println("Perawatan Piano: Jaga kebersihan tuts dan hindari tempat lembap.");
     }
+    
+    @Override
+    public void mainkan() {
+        System.out.println("Piano dimainkan dengan cara menekan tuts.");
+    }
 }

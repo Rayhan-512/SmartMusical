@@ -37,8 +37,14 @@ public class SmartMusical {
         System.out.println("2. Tampilkan Seluruh Alat Musik");
         System.out.println("3. Cari Alat Musik");
         System.out.println("4. Tampilkan Total Alat Musik");
-        System.out.println("5. Keluar");
+        System.out.println("5. Simulasi Mainkan Alat Musik");
+        System.out.println("6. Keluar");
         System.out.println("============================================");
+    }
+    
+    public static void simulasiMainkan(AlatMusik alat) {
+        System.out.println("Jenis objek: " + alat.getClass().getSimpleName());
+        alat.mainkan();
     }
 
     public static void main(String[] args) {
@@ -54,10 +60,10 @@ public class SmartMusical {
 
         while (berjalan) {
             tampilkanMenu();
-            System.out.print("Pilih menu (1-5): ");
+            System.out.print("Pilih menu (1-6): ");
 
             if (!scanner.hasNextInt()) {
-                System.out.println("Input harus berupa angka");
+                System.out.println("Input harus berupa angka.");
                 scanner.nextLine();
                 continue;
             }
@@ -76,7 +82,8 @@ public class SmartMusical {
                         System.out.println("1. Gitar");
                         System.out.println("2. Piano");
                         System.out.println("3. Drum");
-                        System.out.print("Pilihan (1-3): ");
+                        System.out.println("4. Biola");
+                        System.out.print("Pilihan (1-4): ");
                         
                         if (!scanner.hasNextInt()) {
                             System.out.println("Pilihan harus berupa angka.");
@@ -87,7 +94,7 @@ public class SmartMusical {
                         int jenis = scanner.nextInt();
                         scanner.nextLine();
                         
-                        if (jenis < 1 || jenis > 3) {
+                        if (jenis < 1 || jenis > 4) {
                             System.out.println("Jenis alat musik tidak valid.");
                             break;
                         }
@@ -96,13 +103,13 @@ public class SmartMusical {
                         String nama = scanner.nextLine();
                         
                         if (nama.trim().isEmpty()) {
-                            System.out.println("Nama alat musik tidak boleh kosong");
+                            System.out.println("Nama alat musik tidak boleh kosong.");
                             break;
                         }
                         
                         System.out.print("Harga Alat Musik: ");
                         if (!scanner.hasNextDouble()) {
-                            System.out.println("Harga harus berupa angka");
+                            System.out.println("Harga harus berupa angka.");
                             scanner.nextLine();
                             break;
                         }
@@ -172,7 +179,7 @@ public class SmartMusical {
 
                         alatMusikBaru = new Piano(nama, harga, tahun, tuts);
 
-                    } else {
+                    } else if (jenis == 3) {
                         System.out.print("Jumlah Komponen Drum: ");
 
                         if (!scanner.hasNextInt()) {
@@ -190,6 +197,25 @@ public class SmartMusical {
                         }
 
                         alatMusikBaru = new Drum(nama, harga, tahun, komponen);
+                    
+                    } else {
+                        System.out.print("jumlah Senar Biola:");
+                        
+                        if (!scanner.hasNextInt()) {
+                            System.out.println("Jumlah senar harus berupa angka.");
+                            scanner.nextLine();
+                            break;
+                        }
+                        
+                        int senarBiola = scanner.nextInt();
+                        scanner.nextLine();
+                        
+                        if (senarBiola <= 0) {
+                            System.out.println("Jumlahsenar harus lebih dari 0.");
+                            break;
+                        }
+                        
+                        alatMusikBaru = new Biola(nama, harga, tahun, senarBiola);
                     }
 
                     daftar[jumlah] = alatMusikBaru;
@@ -262,14 +288,29 @@ public class SmartMusical {
                 case 4:
                     System.out.println("Total alat musik yang berhasil dibuat: " + AlatMusik.getTotalAlatMusik());
                     break;
-
+                
                 case 5:
+                    if (jumlah == 0) {
+                        System.out.println("Belum ada alat musik yang tersimpan.");
+                        break;
+                    }
+                    
+                    System.out.println("==== SIMULASI ALAT MUSIK ====");
+                    
+                    for (int i = 0; i < jumlah; i++) {
+                        System.out.println("Alat Musik ke-" + (i + 1));
+                        simulasiMainkan(daftar[i]);
+                    }
+                    
+                    break;
+
+                case 6:
                     System.out.println("Terima kasih telah menggunakan Smart Musical!");
                     berjalan = false;
                     break;
 
                 default:
-                    System.out.println("Pilihan tidak valid. Silakan pilih menu 1-5.");
+                    System.out.println("Pilihan tidak valid. Silakan pilih menu 1-6.");
             }
         }
 

@@ -30,4 +30,9 @@ public class Gitar extends AlatMusik {
     public void caraPerawatan() {
         System.out.println("Perawatan Gitar: Bersihkan senar dan simpan gitar di tempat kering.");
     }
+    
+    @Override
+    public void mainkan() {
+        System.out.println("Gitar dimainkan dengan cara dipetik.");
+    }
 }
