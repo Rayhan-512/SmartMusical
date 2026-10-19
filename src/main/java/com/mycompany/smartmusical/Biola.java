@@ -1,6 +1,6 @@
 package com.mycompany.smartmusical;
 
-public class Biola extends AlatMusik {
+public class Biola extends AlatMusik implements DapatDimainkan, DapatDirawat{
     private int jumlahSenar;
     
     public Biola(String nama, double harga, int tahun, int jumlahSenar) {
@@ -13,14 +13,26 @@ public class Biola extends AlatMusik {
     }
     
     public void setJumlahSenar(int jumlahSenar) {
+        if (jumlahSenar <= 0) {
+            System.out.println(
+                "Jumlah senar biola harus lebih dari 0.");
+            return;
+        }
         this.jumlahSenar = jumlahSenar;
     }
     
     @Override
     public void tampilkanInfo() {
-        System.out.printf("Biola | Nama: %s | Harga: Rp%,.0f | Tahun: %d | Jumlah Senar: %d%n", 
-                getNama(), getHarga(), getTahunProduksi(), jumlahSenar);
+        System.out.printf("Nama: %-18s | Harga: Rp%,.0f | Tahun: %d%n",
+            getNama(), getHarga(), getTahunProduksi());
+        System.out.printf("Jenis: Biola | Jumlah Senar: %d%n", jumlahSenar);
     }
+
+    @Override
+    public void tampilkanKarakteristik() {
+        System.out.println("Karakteristik: Biola menghasilkan suara saat senarnya digesek dengan bow.");
+    }
+
     
     @Override
     public void caraPerawatan() {

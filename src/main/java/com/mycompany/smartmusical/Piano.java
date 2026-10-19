@@ -1,6 +1,6 @@
 package com.mycompany.smartmusical;
 
-public class Piano extends AlatMusik {
+public class Piano extends AlatMusik implements DapatDimainkan, DapatDirawat {
     private int jumlahTuts;
 
     public Piano(String nama, double harga, int tahunProduksi, int jumlahTuts) {
@@ -15,6 +15,7 @@ public class Piano extends AlatMusik {
     public void setJumlahTuts(int jumlahTuts) {
         if (jumlahTuts <= 0) {
         System.out.println("Jumlah tuts harus lebih dari 0.");
+        return;
         }
         
         this.jumlahTuts = jumlahTuts;
@@ -24,6 +25,11 @@ public class Piano extends AlatMusik {
     public void tampilkanInfo() {
         super.tampilkanInfo();
         System.out.printf("Jenis: Piano | Jumlah Tuts: %d%n", this.jumlahTuts);
+    }
+    
+    @Override
+    public void tampilkanKarakteristik() {
+        System.out.println("Karakteristik: Piano menghasilkan nada saat tuts ditekan.");
     }
 
     @Override

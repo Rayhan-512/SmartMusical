@@ -1,6 +1,6 @@
 package com.mycompany.smartmusical;
 
-public class AlatMusik {
+public abstract class AlatMusik {
     private String nama;
     private double harga;
     private int tahunProduksi;
@@ -20,6 +20,7 @@ public class AlatMusik {
     public void setNama(String nama) {
         if (nama == null || nama.trim().isEmpty()) {
             System.out.println("Nama alat musik tidak boleh kosong.");
+            return;
         }
         
         this.nama = nama.trim();
@@ -32,6 +33,7 @@ public class AlatMusik {
     public void setHarga(double harga) {
         if (harga <= 0) {
             System.out.println("Harga harus lebih dari 0.");
+            return;
         }
         
         this.harga = harga;
@@ -44,6 +46,7 @@ public class AlatMusik {
     public void setTahunProduksi(int tahunProduksi) {
         if (tahunProduksi < 1900 || tahunProduksi > 2026) {
             System.out.println("Tahun produksi harus antara 1900 sampai 2026.");
+            return;
         }
         
         this.tahunProduksi = tahunProduksi;
@@ -61,6 +64,8 @@ public class AlatMusik {
         System.out.printf("[Alat Musik] Nama: %-18s | Harga: Rp%,.0f | Tahun: %d%n",
                 this.nama, this.harga, this.tahunProduksi);
     }
+    
+    public abstract void tampilkanKarakteristik();
 
     public void caraPerawatan() {
         System.out.println("Perawatan: Simpan di tempat yang bersih, kering, dan aman.");

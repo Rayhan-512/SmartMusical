@@ -1,6 +1,6 @@
 package com.mycompany.smartmusical;
 
-public class Gitar extends AlatMusik {
+public class Gitar extends AlatMusik implements DapatDimainkan, DapatDirawat {
     private int jumlahSenar;
 
     public Gitar(String nama, double harga, int tahunProduksi, int jumlahSenar) {
@@ -15,6 +15,7 @@ public class Gitar extends AlatMusik {
     public void setJumlahSenar(int jumlahSenar) {
         if (jumlahSenar <= 0) {
         System.out.println("Jumlah senar harus lebih dari 0.");
+        return;
         }
         
         this.jumlahSenar = jumlahSenar;
@@ -24,6 +25,11 @@ public class Gitar extends AlatMusik {
     public void tampilkanInfo() {
         super.tampilkanInfo();
         System.out.printf("Jenis: Gitar | Jumlah Senar: %d%n", this.jumlahSenar);
+    }
+    
+    @Override
+    public void tampilkanKarakteristik() {
+        System.out.println("Karakteristik: Gitar menghasilkan suara dengan memetik senarnya.");
     }
 
     @Override

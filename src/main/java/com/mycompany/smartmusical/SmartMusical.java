@@ -44,7 +44,22 @@ public class SmartMusical {
     
     public static void simulasiMainkan(AlatMusik alat) {
         System.out.println("Jenis objek: " + alat.getClass().getSimpleName());
-        alat.mainkan();
+        
+        if (alat instanceof DapatDimainkan) {
+            DapatDimainkan pemutar = (DapatDimainkan) alat;
+            pemutar.mainkan();
+        } else {
+            System.out.println("Objek ini tidak mendukung fitur dimainkan.");
+        }
+    }
+    
+    public static void simulasiPerawatan(AlatMusik alat) {
+        if (alat instanceof DapatDirawat) {
+            DapatDirawat perawat = (DapatDirawat) alat;
+            perawat.caraPerawatan();
+        } else {
+            System.out.println("Informasi perawatan belum tersedia untuk objek ini.");
+        }
     }
 
     public static void main(String[] args) {
@@ -52,6 +67,22 @@ public class SmartMusical {
         AlatMusik[] daftar = new AlatMusik[10];
         int jumlah = 0;
         boolean berjalan = true;
+        
+        daftar[jumlah++] =
+            new Gitar("Gitar Akustik", 1500000, 2024, 6);
+
+        daftar[jumlah++] =
+            new Piano("Piano Digital", 4500000, 2023, 88);
+
+        daftar[jumlah++] =
+            new Drum("Drum Akustik", 3200000, 2022, 5);
+
+        daftar[jumlah++] =
+            new Biola("Biola Pemula", 1200000, 2025, 4);
+
+        for (int i = 0; i < jumlah; i++) {
+            AlatMusik.tambahTotalAlatMusik();
+        }
 
         System.out.println("============================================");
         System.out.println("     SELAMAT DATANG DI SISTEM PENDATAAN     ");
