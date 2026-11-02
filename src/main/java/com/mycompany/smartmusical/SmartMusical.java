@@ -1,347 +1,435 @@
 package com.mycompany.smartmusical;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.InputMismatchException;
+import java.util.Map;
 import java.util.Scanner;
 
 public class SmartMusical {
 
-    public static void cariAlatMusik(String nama, AlatMusik[] daftar, int jumlah) {
-        System.out.println("Mencari alat musik berdasarkan nama: " + nama);
-        boolean ditemukan = false;
-        for (int i = 0; i < jumlah; i++) {
-            if (daftar[i].getNama().equalsIgnoreCase(nama)) {
-                System.out.print("- Ditemukan: ");
-                daftar[i].tampilkanInfo();
-                ditemukan = true;
+    public static void validasiDataAlatMusik(String nama, double harga, int tahun) throws AlatMusikException {
+
+        if (nama == null || nama.trim().isEmpty()) {
+            throw new AlatMusikException("Nama alat musik tidak boleh kosong.");
+        }
+
+        if (harga <= 0) {
+            throw new AlatMusikException("Harga alat musik harus lebih dari 0.");
+        }
+
+        if (tahun < 1900 || tahun > 2026) {
+            throw new AlatMusikException("Tahun produksi harus antara 1900 sampai 2026.");
+        }
+    }
+
+    public static void tampilkanSemua(ArrayList<AlatMusik> daftar) {
+
+        if (daftar.isEmpty()) {
+            System.out.println("Belum ada alat musik yang tersimpan.");
+            return;
+        }
+
+        System.out.println("\n========== DAFTAR ALAT MUSIK (ArrayList) ==========");
+
+        for (int i = 0; i < daftar.size(); i++) {
+            AlatMusik alat = daftar.get(i);
+
+            System.out.println("\nAlat Musik ke-" + (i + 1));
+
+            alat.tampilkanInfo();
+            alat.tampilkanKarakteristik();
+
+            if (alat instanceof DapatDirawat) {
+                DapatDirawat perawat = (DapatDirawat) alat;
+                perawat.caraPerawatan();
             }
         }
-        if (!ditemukan) System.out.println("Alat musik tidak ditemukan.");
+
+        System.out.println("\nJumlah alat musik: " + daftar.size());
     }
 
-    public static void cariAlatMusik(double harga, AlatMusik[] daftar, int jumlah) {
-        System.out.printf("\nMencari alat musik dengan harga: Rp%,.0f%n", harga);
-        boolean ditemukan = false;
-        for (int i = 0; i < jumlah; i++) {
-            if (Double.compare(daftar[i].getHarga(), harga) == 0) {
-                System.out.print("- Ditemukan: ");
-                daftar[i].tampilkanInfo();
-                ditemukan = true;
+    public static void cariAlatMusik(String nama, ArrayList<AlatMusik> daftar) throws AlatMusikException {
+
+        if (nama == null || nama.trim().isEmpty()) {
+            throw new AlatMusikException("Nama pencarian tidak boleh kosong.");
+        }
+
+        for (AlatMusik alat : daftar) {
+            if (alat.getNama().equalsIgnoreCase(nama.trim())) {
+                System.out.println("Data alat musik ditemukan:");
+                alat.tampilkanInfo();
+                return;
             }
         }
-        if (!ditemukan) System.out.println("Alat musik dengan harga tersebut tidak ditemukan.");
+
+        throw new AlatMusikException("Alat musik dengan nama '" + nama+ "' tidak ditemukan.");
     }
 
-    public static void tampilkanMenu() {
-        System.out.println("============================================");
-        System.out.println("       SISTEM PENDATAAN ALAT MUSIK          ");
-        System.out.println("============================================");
-        System.out.println("1. Tambah Alat Musik Baru");
-        System.out.println("2. Tampilkan Seluruh Alat Musik");
-        System.out.println("3. Cari Alat Musik");
-        System.out.println("4. Tampilkan Total Alat Musik");
-        System.out.println("5. Simulasi Mainkan Alat Musik");
-        System.out.println("6. Keluar");
-        System.out.println("============================================");
-    }
-    
-    public static void simulasiMainkan(AlatMusik alat) {
-        System.out.println("Jenis objek: " + alat.getClass().getSimpleName());
-        
-        if (alat instanceof DapatDimainkan) {
-            DapatDimainkan pemutar = (DapatDimainkan) alat;
-            pemutar.mainkan();
-        } else {
-            System.out.println("Objek ini tidak mendukung fitur dimainkan.");
-        }
-    }
-    
-    public static void simulasiPerawatan(AlatMusik alat) {
-        if (alat instanceof DapatDirawat) {
-            DapatDirawat perawat = (DapatDirawat) alat;
-            perawat.caraPerawatan();
-        } else {
-            System.out.println("Informasi perawatan belum tersedia untuk objek ini.");
-        }
-    }
+    public static AlatMusik buatAlatMusik(Scanner scanner) throws AlatMusikException {
+        System.out.println("\nPilih jenis alat musik:");
+        System.out.println("1. Gitar");
+        System.out.println("2. Piano");
+        System.out.println("3. Drum");
+        System.out.println("4. Biola");
+        System.out.print("Pilihan jenis: ");
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        AlatMusik[] daftar = new AlatMusik[10];
-        int jumlah = 0;
-        boolean berjalan = true;
-        
-        daftar[jumlah++] =
-            new Gitar("Gitar Akustik", 1500000, 2024, 6);
+        int jenis = scanner.nextInt();
+        scanner.nextLine();
 
-        daftar[jumlah++] =
-            new Piano("Piano Digital", 4500000, 2023, 88);
-
-        daftar[jumlah++] =
-            new Drum("Drum Akustik", 3200000, 2022, 5);
-
-        daftar[jumlah++] =
-            new Biola("Biola Pemula", 1200000, 2025, 4);
-
-        for (int i = 0; i < jumlah; i++) {
-            AlatMusik.tambahTotalAlatMusik();
+        if (jenis < 1 || jenis > 4) {
+            throw new AlatMusikException("Pilihan jenis alat musik tidak valid.");
         }
 
-        System.out.println("============================================");
-        System.out.println("     SELAMAT DATANG DI SISTEM PENDATAAN     ");
-        System.out.println("                 ALAT MUSIK                 ");
-        System.out.println("============================================");
+        System.out.print("Nama alat musik: ");
+        String nama = scanner.nextLine();
 
-        while (berjalan) {
-            tampilkanMenu();
-            System.out.print("Pilih menu (1-6): ");
+        System.out.print("Harga alat musik: ");
+        double harga = scanner.nextDouble();
 
-            if (!scanner.hasNextInt()) {
-                System.out.println("Input harus berupa angka.");
-                scanner.nextLine();
-                continue;
+        System.out.print("Tahun produksi: ");
+        int tahun = scanner.nextInt();
+        scanner.nextLine();
+
+        validasiDataAlatMusik(nama, harga, tahun);
+
+        String keterangan =
+            jenis == 2 ? "tuts"
+            : jenis == 3 ? "komponen"
+            : "senar";
+
+        System.out.print("Jumlah " + keterangan + ": ");
+
+        int jumlah = scanner.nextInt();
+        scanner.nextLine();
+
+        if (jumlah <= 0) {
+            throw new AlatMusikException("Jumlah karakteristik alat musik harus lebih dari 0.");
+        }
+
+        switch (jenis) {
+            case 1:
+                return new Gitar(nama, harga, tahun, jumlah);
+            case 2:
+                return new Piano(nama, harga, tahun, jumlah);
+            case 3:
+                return new Drum(nama, harga, tahun, jumlah);
+            default:
+                return new Biola(nama, harga, tahun, jumlah);
+        }
+    }
+
+    public static void simulasiMainkan(ArrayList<AlatMusik> daftar) {
+
+        if (daftar.isEmpty()) {
+            System.out.println("Belum ada alat musik yang tersimpan.");
+            return;
+        }
+
+        System.out.println("\n========== SIMULASI MEMAINKAN ALAT MUSIK ==========");
+
+        for (int i = 0; i < daftar.size(); i++) {
+            AlatMusik alat = daftar.get(i);
+
+            System.out.println("\n" + (i + 1) + ". " + alat.getNama());
+
+            if (alat instanceof DapatDimainkan) {
+                DapatDimainkan pemain = (DapatDimainkan) alat;
+                pemain.mainkan();
             }
-            
+        }
+    }
+
+    public static void tampilkanHashMap(HashMap<String, AlatMusik> inventaris) {
+
+        if (inventaris.isEmpty()) {System.out.println("Data inventaris HashMap masih kosong.");
+            return;
+        }
+
+        System.out.println(
+            "\n========== DATA INVENTARIS (HashMap) =========="
+        );
+
+        for (Map.Entry<String, AlatMusik> data: inventaris.entrySet()) {
+
+            System.out.println("Kode Inventaris: " + data.getKey());
+            data.getValue().tampilkanInfo();
+            System.out.println("-----------------------------------------------");
+        }
+    }
+
+    public static void tambahHashMap(String kode, int nomorAlat, ArrayList<AlatMusik> daftar,
+            HashMap<String, AlatMusik> inventaris) throws AlatMusikException {
+
+        if (kode == null || kode.trim().isEmpty()) {
+            throw new AlatMusikException("Kode inventaris tidak boleh kosong.");
+        }
+
+        kode = kode.trim();
+
+        if (inventaris.containsKey(kode)) {
+            throw new AlatMusikException("Kode inventaris sudah digunakan.");
+        }
+
+        if (nomorAlat < 1 || nomorAlat > daftar.size()) {
+            throw new AlatMusikException("Nomor alat musik tidak ditemukan di ArrayList.");
+        }
+
+        inventaris.put(kode, daftar.get(nomorAlat - 1));
+
+        System.out.println("Data berhasil ditambahkan ke HashMap.");
+    }
+
+    public static void cariHashMap(
+            String kode,
+            HashMap<String, AlatMusik> inventaris)
+            throws AlatMusikException {
+
+        if (kode == null || kode.trim().isEmpty()) {
+            throw new AlatMusikException("Kode pencarian tidak boleh kosong.");
+        }
+
+        kode = kode.trim();
+
+        if (!inventaris.containsKey(kode)) {
+            throw new AlatMusikException("Kode inventaris '" + kode + "' tidak ditemukan.");
+        }
+
+        AlatMusik alat = inventaris.get(kode);
+
+        System.out.println("Data inventaris ditemukan:");
+        System.out.println("Kode: " + kode);
+        alat.tampilkanInfo();
+    }
+
+    public static void menuHashMap(
+            Scanner scanner,
+            ArrayList<AlatMusik> daftar,
+            HashMap<String, AlatMusik> inventaris)
+            throws AlatMusikException {
+
+        boolean kembali = false;
+
+        while (!kembali) {
+            System.out.println("\n========== KELOLA HASHMAP ==========");
+            System.out.println("1. Tampilkan semua data inventaris");
+            System.out.println("2. Tambah data inventaris");
+            System.out.println("3. Cari data berdasarkan kode");
+            System.out.println("4. Kembali ke menu utama");
+            System.out.print("Pilih menu HashMap: ");
+
             int pilihan = scanner.nextInt();
             scanner.nextLine();
 
             switch (pilihan) {
                 case 1:
-                    if (jumlah >= daftar.length) {
-                        System.out.println("Kapasitas penyimpanan sudah penuh.");
-                        break;
-                    }
-
-                        System.out.println("\n-- Pilih Jenis Alat Musik --");
-                        System.out.println("1. Gitar");
-                        System.out.println("2. Piano");
-                        System.out.println("3. Drum");
-                        System.out.println("4. Biola");
-                        System.out.print("Pilihan (1-4): ");
-                        
-                        if (!scanner.hasNextInt()) {
-                            System.out.println("Pilihan harus berupa angka.");
-                            scanner.nextLine();
-                            break;
-                        }
-                        
-                        int jenis = scanner.nextInt();
-                        scanner.nextLine();
-                        
-                        if (jenis < 1 || jenis > 4) {
-                            System.out.println("Jenis alat musik tidak valid.");
-                            break;
-                        }
-
-                        System.out.print("Nama Alat Musik: ");
-                        String nama = scanner.nextLine();
-                        
-                        if (nama.trim().isEmpty()) {
-                            System.out.println("Nama alat musik tidak boleh kosong.");
-                            break;
-                        }
-                        
-                        System.out.print("Harga Alat Musik: ");
-                        if (!scanner.hasNextDouble()) {
-                            System.out.println("Harga harus berupa angka.");
-                            scanner.nextLine();
-                            break;
-                        }
-                        
-                        double harga = scanner.nextDouble();
-                        scanner.nextLine();
-                        
-                        if (harga <= 0) {
-                        System.out.println("Harga harus lebih dari 0.");
-                        break;
-                    }
-                    
-                    System.out.print("Tahun Produksi: ");
-
-                    if (!scanner.hasNextInt()) {
-                        System.out.println("Tahun harus berupa angka.");
-                        scanner.nextLine();
-                        break;
-                    }
-
-                    int tahun = scanner.nextInt();
-                    scanner.nextLine();
-
-                    if (tahun < 1900 || tahun > 2026) {
-                        System.out.println("Tahun produksi harus antara 1900 sampai 2026.");
-                        break;
-                    }
-
-                    AlatMusik alatMusikBaru;
-
-                    if (jenis == 1) {
-
-                        System.out.print("Jumlah Senar: ");
-
-                        if (!scanner.hasNextInt()) {
-                            System.out.println("Jumlah senar harus berupa angka.");
-                            scanner.nextLine();
-                            break;
-                        }
-
-                        int senar = scanner.nextInt();
-                        scanner.nextLine();
-
-                        if (senar <= 0) {
-                            System.out.println("Jumlah senar harus lebih dari 0.");
-                            break;
-                        }
-
-                        alatMusikBaru = new Gitar(nama, harga, tahun, senar);
-
-                    } else if (jenis == 2) {
-                        System.out.print("Jumlah Tuts: ");
-
-                        if (!scanner.hasNextInt()) {
-                            System.out.println("Jumlah tuts harus berupa angka.");
-                            scanner.nextLine();
-                            break;
-                        }
-
-                        int tuts = scanner.nextInt();
-                        scanner.nextLine();
-
-                        if (tuts <= 0) {
-                            System.out.println("Jumlah tuts harus lebih dari 0.");
-                            break;
-                        }
-
-                        alatMusikBaru = new Piano(nama, harga, tahun, tuts);
-
-                    } else if (jenis == 3) {
-                        System.out.print("Jumlah Komponen Drum: ");
-
-                        if (!scanner.hasNextInt()) {
-                            System.out.println("Jumlah komponen harus berupa angka.");
-                            scanner.nextLine();
-                            break;
-                        }
-
-                        int komponen = scanner.nextInt();
-                        scanner.nextLine();
-
-                        if (komponen <= 0) {
-                            System.out.println("Jumlah komponen harus lebih dari 0.");
-                            break;
-                        }
-
-                        alatMusikBaru = new Drum(nama, harga, tahun, komponen);
-                    
-                    } else {
-                        System.out.print("jumlah Senar Biola:");
-                        
-                        if (!scanner.hasNextInt()) {
-                            System.out.println("Jumlah senar harus berupa angka.");
-                            scanner.nextLine();
-                            break;
-                        }
-                        
-                        int senarBiola = scanner.nextInt();
-                        scanner.nextLine();
-                        
-                        if (senarBiola <= 0) {
-                            System.out.println("Jumlahsenar harus lebih dari 0.");
-                            break;
-                        }
-                        
-                        alatMusikBaru = new Biola(nama, harga, tahun, senarBiola);
-                    }
-
-                    daftar[jumlah] = alatMusikBaru;
-                    jumlah++;
-                    AlatMusik.tambahTotalAlatMusik();
-                    System.out.println("Alat musik berhasil ditambahkan!");
+                    tampilkanHashMap(inventaris);
                     break;
 
                 case 2:
-                    System.out.println("\n========== DAFTAR SELURUH ALAT MUSIK ==========");
-                    if (jumlah == 0) {
-                        System.out.println("Belum ada alat musik yang tersimpan.");
-
-                    } else {
-                        for (int i = 0; i < jumlah; i++) {
-                            System.out.println("\nAlat Musik ke-" + (i + 1));
-                            daftar[i].tampilkanInfo();
-                            daftar[i].caraPerawatan();
-                        }
-
-                        System.out.println("--------------------------------------------");
-                        System.out.println("Total alat musik: " + AlatMusik.getTotalAlatMusik());
+                    if (daftar.isEmpty()) {
+                        throw new AlatMusikException("Tambahkan alat musik ke ArrayList terlebih dahulu.");
                     }
+
+                    tampilkanSemua(daftar);
+
+                    System.out.print("Masukkan kode inventaris baru: ");
+
+                    String kode = scanner.nextLine();
+
+                    System.out.print("Pilih nomor alat musik dari daftar: ");
+
+                    int nomor = scanner.nextInt();
+                    scanner.nextLine();
+
+                    tambahHashMap(
+                        kode, nomor, daftar, inventaris
+                    );
                     break;
 
                 case 3:
-                    System.out.println("\n========== PENCARIAN ALAT MUSIK ==========");
-                    System.out.println("1. Cari berdasarkan nama");
-                    System.out.println("2. Cari berdasarkan harga");
-                    System.out.print("Pilih (1-2): ");
+                    System.out.print(
+                        "Masukkan kode inventaris yang dicari: "
+                    );
 
-                    if (!scanner.hasNextInt()) {
-                        System.out.println("Pilihan harus berupa angka.");
-                        scanner.nextLine();
-                        break;
-                    }
+                    String kodeCari = scanner.nextLine();
 
-                    int mode = scanner.nextInt();
-                    scanner.nextLine();
-
-                    if (mode == 1) {
-                        System.out.print("Masukkan nama alat musik: ");
-                        String namaCari = scanner.nextLine();
-                        cariAlatMusik(namaCari, daftar, jumlah);
-
-                    } else if (mode == 2) {
-                        System.out.print("Masukkan harga alat musik: ");
-                        if (!scanner.hasNextDouble()) {
-                            System.out.println("Harga harus berupa angka.");
-                            scanner.nextLine();
-                            break;
-                        }
-
-                        double hargaCari =scanner.nextDouble();
-                        scanner.nextLine();
-
-                        if (hargaCari <= 0) {
-                            System.out.println("Harga harus lebih dari 0.");
-                            break;
-                        }
-
-                        cariAlatMusik(hargaCari, daftar, jumlah);
-
-                    } else {
-                        System.out.println("Pilihan pencarian tidak valid.");
-                    }
-                    
+                    cariHashMap(kodeCari, inventaris);
                     break;
 
                 case 4:
-                    System.out.println("Total alat musik yang berhasil dibuat: " + AlatMusik.getTotalAlatMusik());
-                    break;
-                
-                case 5:
-                    if (jumlah == 0) {
-                        System.out.println("Belum ada alat musik yang tersimpan.");
-                        break;
-                    }
-                    
-                    System.out.println("==== SIMULASI ALAT MUSIK ====");
-                    
-                    for (int i = 0; i < jumlah; i++) {
-                        System.out.println("Alat Musik ke-" + (i + 1));
-                        simulasiMainkan(daftar[i]);
-                    }
-                    
-                    break;
-
-                case 6:
-                    System.out.println("Terima kasih telah menggunakan Smart Musical!");
-                    berjalan = false;
+                    kembali = true;
                     break;
 
                 default:
-                    System.out.println("Pilihan tidak valid. Silakan pilih menu 1-6.");
+                    System.out.println(
+                        "Pilihan menu HashMap tidak valid."
+                    );
+            }
+        }
+    }
+
+    public static void tampilkanMenu() {
+        System.out.println(
+            "\n============================================"
+        );
+        System.out.println(
+            "          SISTEM PENDATAAN SMARTMUSICAL"
+        );
+        System.out.println(
+            "============================================"
+        );
+        System.out.println(
+            "1. Tampilkan seluruh alat musik"
+        );
+        System.out.println(
+            "2. Tambah alat musik baru"
+        );
+        System.out.println(
+            "3. Cari alat musik berdasarkan nama"
+        );
+        System.out.println(
+            "4. Simulasi memainkan seluruh alat musik"
+        );
+        System.out.println(
+            "5. Kelola data inventaris"
+        );
+        System.out.println(
+            "6. Tampilkan total alat musik"
+        );
+        System.out.println(
+            "7. Keluar"
+        );
+        System.out.println(
+            "============================================"
+        );
+    }
+
+    public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
+
+        ArrayList<AlatMusik> daftar = new ArrayList<>();
+
+        HashMap<String, AlatMusik> inventaris =
+            new HashMap<>();
+
+        daftar.add(
+            new Gitar("Gitar Akustik", 1500000, 2024, 6)
+        );
+
+        daftar.add(
+            new Piano("Piano Digital", 4500000, 2023, 88)
+        );
+
+        daftar.add(
+            new Drum("Drum Akustik", 3200000, 2022, 5)
+        );
+
+        daftar.add(
+            new Biola("Biola Pemula", 1200000, 2025, 4)
+        );
+
+        for (int i = 0; i < daftar.size(); i++) {
+            AlatMusik.tambahTotalAlatMusik();
+        }
+
+        inventaris.put("GT001", daftar.get(0));
+        inventaris.put("PN001", daftar.get(1));
+        inventaris.put("DR001", daftar.get(2));
+
+        boolean berjalan = true;
+
+        System.out.println(
+            "Selamat datang di Sistem Pendataan SmartMusical!"
+        );
+
+        while (berjalan) {
+            try {
+                tampilkanMenu();
+
+                System.out.print("Pilih menu (1-7): ");
+
+                int pilihan = scanner.nextInt();
+                scanner.nextLine();
+
+                switch (pilihan) {
+                    case 1:
+                        tampilkanSemua(daftar);
+                        break;
+
+                    case 2:
+                        AlatMusik alatBaru =
+                            buatAlatMusik(scanner);
+
+                        daftar.add(alatBaru);
+                        AlatMusik.tambahTotalAlatMusik();
+
+                        System.out.println(
+                            "Alat musik berhasil ditambahkan ke ArrayList."
+                        );
+                        break;
+
+                    case 3:
+                        System.out.print(
+                            "Masukkan nama alat musik yang dicari: "
+                        );
+
+                        String namaCari = scanner.nextLine();
+
+                        cariAlatMusik(namaCari, daftar);
+                        break;
+
+                    case 4:
+                        simulasiMainkan(daftar);
+                        break;
+
+                    case 5:
+                        menuHashMap(
+                            scanner, daftar, inventaris
+                        );
+                        break;
+
+                    case 6:
+                        System.out.println(
+                            "Total alat musik: "
+                            + AlatMusik.getTotalAlatMusik()
+                        );
+                        break;
+
+                    case 7:
+                        berjalan = false;
+
+                        System.out.println(
+                            "Terima kasih telah menggunakan SmartMusical!"
+                        );
+                        break;
+
+                    default:
+                        System.out.println(
+                            "Pilihan tidak valid. Silakan pilih menu 1-7."
+                        );
+                }
+
+            } catch (InputMismatchException e) {
+
+                System.out.println(
+                    "Error Input: Masukkan angka sesuai pilihan atau data yang diminta."
+                );
+
+                scanner.nextLine();
+
+            } catch (AlatMusikException e) {
+
+                System.out.println(
+                    "Error Data: " + e.getMessage()
+                );
+
+            } finally {
+
+                System.out.println(
+                    "Finally: proses menu telah selesai diperiksa."
+                );
             }
         }
 
