@@ -4,23 +4,29 @@ public class Drum extends AlatMusik implements DapatDimainkan, DapatDirawat {
 
     private int jumlahKomponen;
 
-    public Drum(String nama, double harga,int tahunProduksi, int jumlahKomponen) {
+    public Drum(String nama, double harga, int tahunProduksi, int jumlahKomponen) {
+
         super(nama, harga, tahunProduksi);
-        this.jumlahKomponen = jumlahKomponen;
+        setJumlahKomponen(jumlahKomponen);
     }
 
     public int getJumlahKomponen() {
-        return jumlahKomponen;
+        return this.jumlahKomponen;
     }
 
     public void setJumlahKomponen(int jumlahKomponen) {
+        if (jumlahKomponen <= 0) {
+            System.out.println("Jumlah komponen harus lebih dari 0.");
+            return;
+        }
+
         this.jumlahKomponen = jumlahKomponen;
     }
 
     @Override
     public void tampilkanInfo() {
         super.tampilkanInfo();
-        System.out.printf("Jenis: Drum | Jumlah Komponen: %d%n", jumlahKomponen);
+        System.out.printf("Jenis: Drum | Jumlah Komponen: %d%n",this.jumlahKomponen);
     }
 
     @Override
@@ -29,8 +35,7 @@ public class Drum extends AlatMusik implements DapatDimainkan, DapatDirawat {
     }
 
     @Override
-    public void mainkan() {
-        System.out.println("Drum dimainkan dengan cara dipukul.");
+    public void mainkan() {System.out.println("Drum dimainkan dengan cara dipukul.");
     }
 
     @Override

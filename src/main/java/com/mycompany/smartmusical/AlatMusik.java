@@ -1,6 +1,7 @@
 package com.mycompany.smartmusical;
 
 public abstract class AlatMusik {
+
     private String nama;
     private double harga;
     private int tahunProduksi;
@@ -8,32 +9,46 @@ public abstract class AlatMusik {
     private static int totalAlatMusik = 0;
 
     public AlatMusik(String nama, double harga, int tahunProduksi) {
-        this.nama = nama;
-        this.harga = harga;
-        this.tahunProduksi = tahunProduksi;
+        setNama(nama);
+        setHarga(harga);
+        setTahunProduksi(tahunProduksi);
     }
 
     public String getNama() {
-        return nama;
+        return this.nama;
     }
 
     public void setNama(String nama) {
-        this.nama = nama;
+        if (nama == null || nama.trim().isEmpty()) {
+            System.out.println("Nama alat musik tidak boleh kosong.");
+            return;
+        }
+
+        this.nama = nama.trim();
     }
 
     public double getHarga() {
-        return harga;
+        return this.harga;
     }
 
     public void setHarga(double harga) {
+        if (harga <= 0) {
+            System.out.println("Harga harus lebih dari 0.");
+            return;
+        }
+
         this.harga = harga;
     }
 
     public int getTahunProduksi() {
-        return tahunProduksi;
+        return this.tahunProduksi;
     }
 
     public void setTahunProduksi(int tahunProduksi) {
+        if (tahunProduksi < 1900 || tahunProduksi > 2026) {
+            System.out.println("Tahun produksi harus antara 1900 sampai 2026.");
+            return;
+        }
         this.tahunProduksi = tahunProduksi;
     }
 
@@ -46,8 +61,7 @@ public abstract class AlatMusik {
     }
 
     public void tampilkanInfo() {
-        System.out.printf("Nama: %-18s | Harga: Rp%,.0f | Tahun: %d%n", nama, harga, tahunProduksi);
+        System.out.printf("Nama: %-18s | Harga: Rp%,.0f | Tahun: %d%n", this.nama, this.harga, this.tahunProduksi);
     }
-
     public abstract void tampilkanKarakteristik();
 }
