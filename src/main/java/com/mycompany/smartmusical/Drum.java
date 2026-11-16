@@ -1,11 +1,9 @@
 package com.mycompany.smartmusical;
 
 public class Drum extends AlatMusik implements DapatDimainkan, DapatDirawat {
-
     private int jumlahKomponen;
 
     public Drum(String nama, double harga, int tahunProduksi, int jumlahKomponen) {
-
         super(nama, harga, tahunProduksi);
         setJumlahKomponen(jumlahKomponen);
     }

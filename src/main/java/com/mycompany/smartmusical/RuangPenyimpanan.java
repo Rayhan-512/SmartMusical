@@ -1,7 +1,7 @@
 package com.mycompany.smartmusical;
 
-public class RuangPenyimpanan {
-
+public class RuangPenyimpanan implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     private String namaRuang;
     private int kapasitas;
 

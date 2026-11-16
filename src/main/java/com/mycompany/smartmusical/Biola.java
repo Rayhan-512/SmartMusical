@@ -1,11 +1,9 @@
 package com.mycompany.smartmusical;
 
 public class Biola extends AlatMusik implements DapatDimainkan, DapatDirawat {
-
     private int jumlahSenar;
 
     public Biola(String nama, double harga, int tahunProduksi, int jumlahSenar) {
-
         super(nama, harga, tahunProduksi);
         setJumlahSenar(jumlahSenar);
     }

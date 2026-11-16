@@ -4,15 +4,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
 
 public class SmartMusical {
-
     private final ArrayList<AlatMusik> daftarAlatMusik;
     private final HashMap<String, Pelanggan> dataPelanggan;
     private final RuangPenyimpanan ruangPenyimpanan;
 
     public SmartMusical() {
-
         daftarAlatMusik = new ArrayList<>();
         dataPelanggan = new HashMap<>();
         ruangPenyimpanan = new RuangPenyimpanan("Ruang Penyimpanan SmartMusical", 20);
@@ -24,7 +28,6 @@ public class SmartMusical {
     }
 
     public void tambahAlatMusik(AlatMusik alat) throws AlatMusikException {
-
         if (alat == null) {
             throw new AlatMusikException("Objek alat musik tidak boleh kosong.");
         }
@@ -47,8 +50,7 @@ public class SmartMusical {
             alat.tampilkanInfo();
             alat.tampilkanKarakteristik();
             if (alat instanceof DapatDirawat) {
-                DapatDirawat perawatan =
-                    (DapatDirawat) alat;
+                DapatDirawat perawatan = (DapatDirawat) alat;
                 perawatan.caraPerawatan();
             }
         }
@@ -57,7 +59,6 @@ public class SmartMusical {
     }
 
     public AlatMusik cariAlatMusik(String nama) throws AlatMusikException {
-
         if (nama == null || nama.trim().isEmpty()) {
             throw new AlatMusikException("Nama alat musik tidak boleh kosong.");
         }
@@ -72,7 +73,6 @@ public class SmartMusical {
     }
 
     public AlatMusik getAlatMusik(int nomor) throws AlatMusikException {
-
         if (nomor < 1 || nomor > daftarAlatMusik.size()) {
             throw new AlatMusikException("Nomor alat musik tidak tersedia.");
         }
@@ -84,13 +84,11 @@ public class SmartMusical {
     }
 
     public void tambahPelanggan(Pelanggan pelanggan) throws AlatMusikException {
-
         if (pelanggan == null) {
             throw new AlatMusikException("Data pelanggan tidak boleh kosong.");
         }
 
         String id = pelanggan.getId();
-
         if (dataPelanggan.containsKey(id)) {
             throw new AlatMusikException("ID pelanggan sudah terdaftar.");
         }
@@ -100,7 +98,6 @@ public class SmartMusical {
     }
 
     public Pelanggan cariPelanggan(String id) throws AlatMusikException {
-
         if (id == null || id.trim().isEmpty()) {
             throw new AlatMusikException("ID pelanggan tidak boleh kosong.");
         }
@@ -133,6 +130,60 @@ public class SmartMusical {
         return dataPelanggan.size();
     }
 
+    private static final String FILE_DATA = "data_smartmusical.dat";
+    private static final String FILE_LOG = "log_transaksi.txt";
+
+    public void simpanDataKeFile() {
+        try (ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(FILE_DATA))) {
+            output.writeObject(daftarAlatMusik);
+            output.writeObject(dataPelanggan);
+            System.out.println("Data berhasil disimpan ke " + FILE_DATA);
+        } catch (IOException e) {
+            System.out.println("Gagal menyimpan data: " + e.getMessage());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public boolean muatDataDariFile() {
+        File file = new File(FILE_DATA);
+        if (!file.exists()) {
+            return false;
+        }
+
+        try (ObjectInputStream input = new ObjectInputStream(new FileInputStream(file))) {
+            ArrayList<AlatMusik> alatTersimpan = (ArrayList<AlatMusik>) input.readObject();
+            HashMap<String, Pelanggan> pelangganTersimpan = (HashMap<String, Pelanggan>) input.readObject();
+            daftarAlatMusik.clear();
+            daftarAlatMusik.addAll(alatTersimpan);
+            dataPelanggan.clear();
+            dataPelanggan.putAll(pelangganTersimpan);
+            AlatMusik.setTotalAlatMusik(daftarAlatMusik.size());
+            System.out.println("Data berhasil dimuat dari " + FILE_DATA);
+            return true;
+        } catch (IOException | ClassNotFoundException | ClassCastException e) {
+            System.out.println("Gagal memuat data: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public void bacaLogTransaksi() {
+        File file = new File(FILE_LOG);
+
+        if (!file.exists()) {
+            System.out.println("Belum ada file log transaksi.");
+            return;
+        }
+
+        System.out.println("\n========== RIWAYAT TRANSAKSI ==========");
+        try (Scanner pembaca = new Scanner(file)) {
+            while (pembaca.hasNextLine()) {
+                System.out.println(pembaca.nextLine());
+            }
+        } catch (IOException e) {
+            System.out.println("Gagal membaca log transaksi: " + e.getMessage());
+        }
+    }
+
     public static int bacaInteger(Scanner scanner, String pesan) {
         while (true) {
             System.out.print(pesan);
@@ -157,7 +208,7 @@ public class SmartMusical {
         }
     }
 
-    public static AlatMusik inputAlatMusik(Scanner scanner)throws AlatMusikException {
+    public static AlatMusik inputAlatMusik(Scanner scanner) throws AlatMusikException {
         System.out.println("\n-- PILIH JENIS ALAT MUSIK --");
         System.out.println("1. Gitar");
         System.out.println("2. Piano");
@@ -241,7 +292,6 @@ public class SmartMusical {
                     }
 
                     Pelanggan pelangganBaru = new Pelanggan(id, nama);
-
                     sistem.tambahPelanggan(pelangganBaru);
                     break;
 
@@ -267,8 +317,7 @@ public class SmartMusical {
     }
 
     public static void jalankanTransaksi(Scanner scanner, SmartMusical sistem, TransaksiPeminjaman transaksi) throws AlatMusikException {
-        if (sistem.getJumlahKoleksi() == 0
-                || sistem.getJumlahPelanggan() == 0) {
+        if (sistem.getJumlahKoleksi() == 0 || sistem.getJumlahPelanggan() == 0) {
             throw new AlatMusikException("Data pelanggan atau alat musik belum tersedia.");
         }
 
@@ -293,32 +342,35 @@ public class SmartMusical {
         System.out.println("6. Transaksi peminjaman");
         System.out.println("7. Simulasi memainkan alat musik");
         System.out.println("8. Tampilkan jumlah data");
-        System.out.println("9. Keluar");
+        System.out.println("9. Simpan data ke file");
+        System.out.println("10. Muat data dari file");
+        System.out.println("11. Tampilkan log transaksi");
+        System.out.println("12. Keluar");
         System.out.println("============================================");
     }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         SmartMusical sistem = new SmartMusical();
-        TransaksiPeminjaman transaksi =
-            new TransaksiPeminjaman();
-        try {
-            sistem.tambahAlatMusik(new Gitar("Gitar Akustik", 1500000, 2024, 6));
-            sistem.tambahAlatMusik(new Piano("Piano Digital", 4500000, 2023, 88));
-            sistem.tambahAlatMusik(new Drum("Drum Akustik", 3200000, 2022, 5));
-            sistem.tambahAlatMusik(new Biola("Biola Pemula", 1200000, 2025, 4));
-            sistem.tambahPelanggan(new Pelanggan("P001", "Andi"));
-            sistem.tambahPelanggan(new Pelanggan("P002", "Budi"));
-            sistem.tambahPelanggan(new Pelanggan("P003", "Citra"));
-        } catch (AlatMusikException e) {
-            System.out.println("Gagal menyiapkan data awal: " + e.getMessage());
+        TransaksiPeminjaman transaksi = new TransaksiPeminjaman();
+        if (!sistem.muatDataDariFile()) {
+            try {
+                sistem.tambahAlatMusik(new Gitar("Gitar Akustik", 1500000, 2024, 6));
+                sistem.tambahAlatMusik(new Piano("Piano Digital", 4500000, 2023, 88));
+                sistem.tambahAlatMusik(new Drum("Drum Akustik", 3200000, 2022, 5));
+                sistem.tambahAlatMusik(new Biola("Biola Pemula", 1200000, 2025, 4));
+                sistem.tambahPelanggan(new Pelanggan("P001", "Andi"));
+                sistem.tambahPelanggan(new Pelanggan("P002", "Budi"));
+                sistem.tambahPelanggan(new Pelanggan("P003", "Citra"));
+            } catch (AlatMusikException e) {
+                System.out.println("Gagal menyiapkan data awal: " + e.getMessage());
+            }
         }
         boolean berjalan = true;
-
         System.out.println("\nSelamat datang di Sistem SmartMusical!");
         while (berjalan) {
             tampilkanMenu();
-            int pilihan = bacaInteger(scanner, "Pilih menu (1-9): ");
+            int pilihan = bacaInteger(scanner, "Pilih menu (1-12): ");
             try {
                 switch (pilihan) {
                     case 1:
@@ -334,8 +386,7 @@ public class SmartMusical {
                         break;
                         
                     case 4:
-                        AlatMusik alatBaru =
-                            inputAlatMusik(scanner);
+                        AlatMusik alatBaru = inputAlatMusik(scanner);
                         sistem.tambahAlatMusik(alatBaru);
                         break;
                         
@@ -354,12 +405,10 @@ public class SmartMusical {
                         sistem.lihatSemuaKoleksi();
                         for (int i = 0;
                                 i < sistem.getJumlahKoleksi(); i++) {
-                            AlatMusik alat =
-                                sistem.getAlatMusik(i + 1);
+                            AlatMusik alat = sistem.getAlatMusik(i + 1);
                             if (alat instanceof DapatDimainkan) {
                                 System.out.println("\nMemainkan " + alat.getNama());
-                                DapatDimainkan pemain =
-                                    (DapatDimainkan) alat;
+                                DapatDimainkan pemain = (DapatDimainkan) alat;
                                 pemain.mainkan();
                             }
                         }
@@ -372,12 +421,27 @@ public class SmartMusical {
                         break;
 
                     case 9:
+                        sistem.simpanDataKeFile();
+                        break;
+
+                    case 10:
+                        if (!sistem.muatDataDariFile()) {
+                            System.out.println("Data belum tersedia atau gagal dimuat.");
+                        }
+                        break;
+
+                    case 11:
+                        sistem.bacaLogTransaksi();
+                        break;
+
+                    case 12:
+                        sistem.simpanDataKeFile();
                         System.out.println("Terima kasih telah menggunakan SmartMusical.");
                         berjalan = false;
                         break;
 
                     default:
-                        System.out.println("Pilihan tidak tersedia. Pilih menu 1-9.");
+                        System.out.println("Pilihan tidak tersedia. Pilih menu 1-12.");
                 }
 
             } catch (AlatMusikException e) {

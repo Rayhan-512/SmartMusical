@@ -1,7 +1,7 @@
 package com.mycompany.smartmusical;
 
-public class Pelanggan {
-
+public class Pelanggan implements java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     private String id;
     private String nama;
 

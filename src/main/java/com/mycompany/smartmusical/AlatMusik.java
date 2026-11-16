@@ -1,11 +1,11 @@
 package com.mycompany.smartmusical;
 
-public abstract class AlatMusik {
+public abstract class AlatMusik implements java.io.Serializable {
 
+    private static final long serialVersionUID = 1L;
     private String nama;
     private double harga;
     private int tahunProduksi;
-
     private static int totalAlatMusik = 0;
 
     public AlatMusik(String nama, double harga, int tahunProduksi) {
@@ -58,6 +58,10 @@ public abstract class AlatMusik {
 
     public static int getTotalAlatMusik() {
         return totalAlatMusik;
+    }
+
+    public static void setTotalAlatMusik(int total) {
+        totalAlatMusik = total;
     }
 
     public void tampilkanInfo() {

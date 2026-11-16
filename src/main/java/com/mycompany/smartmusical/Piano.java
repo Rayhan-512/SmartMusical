@@ -1,11 +1,9 @@
 package com.mycompany.smartmusical;
 
 public class Piano extends AlatMusik implements DapatDimainkan, DapatDirawat {
-
     private int jumlahTuts;
 
     public Piano(String nama, double harga, int tahunProduksi, int jumlahTuts) {
-
         super(nama, harga, tahunProduksi);
         setJumlahTuts(jumlahTuts);
     }

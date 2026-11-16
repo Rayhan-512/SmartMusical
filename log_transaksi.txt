@@ -1,0 +1,14 @@
+Nomor Transaksi : TRX1
+Waktu           : 16-11-2026 20:58:27
+Nama Pelanggan  : Andi
+ID Pelanggan    : P001
+Nama Alat Musik : Gitar Akustik
+Status          : Peminjaman berhasil diproses.
+----------------------------------------
+Nomor Transaksi : TRX1
+Waktu           : 16-11-2026 21:19:35
+Nama Pelanggan  : Citra
+ID Pelanggan    : P003
+Nama Alat Musik : Biola Pemula
+Status          : Peminjaman berhasil diproses.
+----------------------------------------
